@@ -28,3 +28,4 @@ then, use `./run.sh` to start the LanternOS with your QEMU.
 # TODO
 1. Fix the bug of printf()
 2. Make the disk support.
+3. Compelete the key-maps (key-board mapping).
