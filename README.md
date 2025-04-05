@@ -18,6 +18,9 @@ We have completed the following functions so far:
 First of all, clone this responsity:
 `git clone https://github.com/ternaryop8479/LanternOS.git`
 
+then compile `make.cpp` to `make`:
+`g++ make.cpp -o make -O2`
+
 and run `./make`
 
 then, use `./run.sh` to start the LanternOS with your QEMU.
