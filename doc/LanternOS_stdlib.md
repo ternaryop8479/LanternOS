@@ -1,7 +1,7 @@
 # Document of LanternOS_stdlib
 
 ## Introduce
-    LanternOS_stdlib is a library redevelop from stdlib, we organized some API from stdlib and use it to develop the Lantern OS.
+LanternOS_stdlib is a library redevelop from stdlib, we organized some API from stdlib and use it to develop the Lantern OS.
 
 ## APIs
 1. `printf(const char *format, ...)`(in `kernel/stdio.h`)
