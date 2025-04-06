@@ -7,9 +7,11 @@
 #include <kernel/vga/vga.h>
 #include <kernel/hal/ports.h>
 
-void printlogf(const char *format, ...); // Log function (wrap)
-void printlogf_nn(const char *format, ...); // Log function (no-wrap)
-void printf(const char *format, ...); // Print format string
+typedef uint64_t toSize_t;
+
+toSize_t printlogf(const char *format, ...); // Log function (wrap)
+toSize_t printlogf_nn(const char *format, ...); // Log function (no-wrap)
+toSize_t printf(const char *format, ...); // Print format string
 
 char getch(); // Get a character from keyboard buffer
 

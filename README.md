@@ -10,7 +10,7 @@ We have completed the following functions so far:
 1. Boot the system by GNU GRUB
 2. VGA I/O and serial I/O
 3. Get RTC time
-4. printf() and memcpy() from stdlib (but there is a bug in printf() :P)
+4. printf() and memcpy() from stdlib **(but the format of printf() is not as same as printf() from stdio, ask for detail, please look at [LanternOS stdlib](doc/LanternOS_stdlib.md))**
 5. Keyboard I/O
 6. Basic terminal
 
@@ -26,6 +26,5 @@ and run `./make`
 then, use `./run.sh` to start the LanternOS with your QEMU.
 
 # TODO
-1. Fix the bug of printf()
-2. Make the disk support.
-3. Compelete the key-maps (key-board mapping).
+1. Make the disk support.
+2. Compelete the key-maps (key-board mapping).

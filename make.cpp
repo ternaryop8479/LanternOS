@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
             Links[Links_size + i] = asmFiles[i];
             Links[Links_size + i].replace(Links[Links_size + i].find(".S"), 2, ".o");
             printf("  | 正在编译 %s 到 %s ...\n", asmFiles[i].c_str(), Links[Links_size + i].c_str());
-            system(("gcc -c \'" + asmFiles[i] + "\' -o \'" + Links[Links_size + i] + "\' -ffreestanding -O0 -Wall -fno-stack-protector -Wextra -I\"" + includePath + "\"").c_str());
+            system(("gcc -c \'" + asmFiles[i] + "\' -o \'" + Links[Links_size + i] + "\' -ffreestanding -O2 -Wall -fno-stack-protector -Wextra -I\"" + includePath + "\"").c_str());
         }
         Links_size += asmFiles_size;
 
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
             Links[Links_size + i] = cFiles[i];
             Links[Links_size + i].replace(Links[Links_size + i].find(".c"), 2, ".o");
             printf("  | 正在编译 %s 到 %s ...\n", cFiles[i].c_str(), Links[Links_size + i].c_str());
-            system(("gcc -c \'" + cFiles[i] + "\' -o \'" + Links[Links_size + i] + "\' -ffreestanding -O0 -Wall -fno-stack-protector -Wextra -I\"" + includePath + "\"").c_str());
+            system(("gcc -c \'" + cFiles[i] + "\' -o \'" + Links[Links_size + i] + "\' -ffreestanding -O2 -Wall -fno-stack-protector -Wextra -I\"" + includePath + "\"").c_str());
         }
         Links_size += cFiles_size;
 

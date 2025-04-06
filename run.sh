@@ -34,6 +34,7 @@ max_file="${sorted_files[0]}"
 # 输出结果
 qemu-system-x86_64 \
     -drive "file=$folder_path/$max_file,format=raw,index=0,media=disk" \
+    -drive file=LanternOS.qcow2,format=qcow2,index=1,media=disk \
     -bios /usr/share/ovmf/x64/OVMF.4m.fd \
     -cpu kvm64,+smep,+smap \
     -smp sockets=1,dies=1,cores=4,threads=2 \

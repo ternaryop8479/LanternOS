@@ -135,7 +135,7 @@ int vga_putc(char c) {
 
 // Print string to the VGA
 int vga_putstr(const char *str, uint64_t strSize) {
-    int result;
+    int result = 0;
     for(uint64_t i = 0; i < strSize; ++i) {
         result += vga_putc(str[i]);
     }
