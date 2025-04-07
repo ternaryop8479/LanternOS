@@ -26,5 +26,8 @@ and run `./make`
 then, use `./run.sh` to start the LanternOS with your QEMU.
 
 # TODO
-1. Make the disk support.
-2. Compelete the key-maps (key-board mapping).
+1. Add the memory management.
+2. Make a font for LanternOS Terminal.
+3. Port the stdlib and STL to LanternOS.
+4. Make the disk support.
+5. Compelete the key-maps (key-board mapping).
