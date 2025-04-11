@@ -39,3 +39,46 @@ void getline(char *buffer) {
     }
     buffer[offeset] = '\0';
 }
+
+
+// static char normal_chars[] = {'a', 'b', 'f', 'n', 'r', 't', 'v', '\\', '\'', '\"', '?'};
+// static char escape_chars[] = {'\a', '\b', '\f', '\n', '\r', '\t', '\v', '\\', '\'', '\"', '\?'};
+
+// static short is_chneed_escaped(char target) {
+//     short res = 0;
+//     for(int i = 0; i < sizeof(normal_chars); (target == normal_chars[i]) ? res = 1 : 0, ++i);
+//     return res;
+// }
+
+// static char cescape_to_normal(char ch) {
+//     char res = 0;
+//     for(int i = 0; i < sizeof(escape_chars); (ch == escape_chars[i]) ? res =  : 0, ++i);
+//     return res;
+// }
+
+// void escape_to_normal(char *normal_str, const char *escape_str, uint64_t max_buffer_size) {
+    
+// }
+
+// void normal_to_escape(char *escape_str, const char *normal_str, uint64_t max_buffer_size) {
+    
+// }
+
+// void parse_commandline(const char *commandline, char *params, uint64_t max_buffer_size) {
+//     for(uint64_t i = 0, parami = 0; commandline[i] != '\0'; ++i) {
+//         if(commandline[i] == '\"') {
+//             uint64_t nowParamI = parami; // Record the offeset when starting parsing
+//             while(commandline[++i] != '\"') { // Until find the matched \"
+//                 if(parami + 1 < max_buffer_size) {
+//                     if(is_chneed_escaped(commandline[i])) {
+//                         params[parami++] = cescape_to_normal(commandline[i]);
+//                     }
+//                     params[parami++] = commandline[i];
+//                 } else {
+//                     return;
+//                 }
+//             }
+//             params[parami++] = '\n';
+//         }
+//     }
+// }
