@@ -4,5 +4,6 @@
 #include <kernel/types.h>
 
 void *memcpy(void *dest, const void *src, size_t n);
+int strcmp(const char *str1, const char *str2);
 
 #endif

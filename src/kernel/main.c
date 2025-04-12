@@ -28,22 +28,30 @@ void kernel_main(unsigned int magic, multiboot_uint8_t *multiboot_header) {
     printf("\nWelcome to Lantern OS (%s %s, %s build version)!\n", KERNEL_NAME, KERNEL_VERSION, KERNEL_DATE);
     printf("Copyright(C) Ternary_Operator.\n");
     printf("\n");
+    const uint64_t MAX_CMD_SIZE = 1024, MAX_PARAM_SIZE = 512;
     while(1) {
         printf("[Ternary_Operator: ~] $>. ");
-        char command[4096];
-        getline(command);
-        if(command[0] == 'e' && command[1] == 'x' && command[2] == 'i' && command[3] == 't') {
+        char commandline[MAX_CMD_SIZE], params[MAX_CMD_SIZE];
+        getline(commandline); // Get commandline
+        parse_commandline(commandline, params, MAX_CMD_SIZE);
+        char exec[MAX_PARAM_SIZE];
+        parse_param(exec, params, 0);
+        if(strcmp(exec, "echo") == 0) {
+            char param1[MAX_PARAM_SIZE];
+            parse_param(param1, params, 1);
+            printf("%s\n", param1);
+        } else if(strcmp(exec, "exit") == 0) {
             printlogf("Exited.");
             return;
-        } else if(command[0] == 'c' && command[1] == 'l' && command[2] == 'e' && command[3] == 'a' && command[4] == 'r') {
+        } else if(strcmp(exec, "clear") == 0) {
             vga_clear_screen(terminal_background_color);
-        } else if(command[0] == 't' && command[1] == 'i' && command[2] == 'm' && command[3] == 'e') {
+        } else if(strcmp(exec, "time") == 0) {
             struct rtc_time rtctime;
             get_rtc_time(&rtctime);
             printf("Current time is %d/%d/%d %d:%d:%d\n", rtctime.year, rtctime.month, rtctime.day, rtctime.hour, rtctime.minute, rtctime.second);
         } else {
-            printf("Unknown command: %s\n", command);
+            printf("Unknown command: %s\n", exec);
         }
-        for(int i = 0; command[i] != '\0'; command[i++] = '\0');
+        for(int i = 0; commandline[i] != '\0'; commandline[i++] = '\0');
     }
 }
