@@ -1,6 +1,7 @@
 #ifndef LanternOS_Header_KERNEL_TYPES_H
 #define LanternOS_Header_KERNEL_TYPES_H
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
 
@@ -10,5 +11,6 @@
 #define KERNEL_DATE       __DATE__
 
 #define HALT() {asm volatile ("hlt");}
+#define CLINT() {asm volatile ("cli");}
 
 #endif

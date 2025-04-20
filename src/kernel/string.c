@@ -58,3 +58,12 @@ int strcmp(const char *str1, const char *str2) {
     }
     return *(unsigned char *)str1 - *(unsigned char *)str2;
 }
+
+int strncmp(const char *str1, const char *str2, uint64_t n) {
+    for(uint64_t i = 0; *str1 == *str2 && ++i < n; ++str1, ++str2) {
+        if(*str1 == '\0' && *str2 == '\0') {
+            return 0;
+        }
+    }
+    return *(unsigned char *)++str1 - *(unsigned char *)++str2;
+}

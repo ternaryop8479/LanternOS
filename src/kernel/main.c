@@ -1,4 +1,6 @@
 #include <boot/init.h>
+#include <kernel/hal/acpi.h>
+#include <kernel/hal/ports.h>
 #include <kernel/terminal.h>
 #include <kernel/time.h>
 
@@ -20,6 +22,13 @@ void kernel_main(unsigned int magic, multiboot_uint8_t *multiboot_header) {
     }
     printlogf("Initializing keyboard...");
     keyboard_init();
+    printlogf("Initializing ACPI module...");
+    int result;
+    if((result = acpi_init(multiboot_header)) != 0) {
+        printlogf_nn("Failed to initialize ACPI module!");
+        printf("%d %d\n", result, -1);
+        while(1) HALT();
+    }
     printlogf("All initialization tasks done.");
     printlogf("Kernel successfully started!");
 
@@ -28,7 +37,8 @@ void kernel_main(unsigned int magic, multiboot_uint8_t *multiboot_header) {
     printf("\nWelcome to Lantern OS (%s %s, %s build version)!\n", KERNEL_NAME, KERNEL_VERSION, KERNEL_DATE);
     printf("Copyright(C) Ternary_Operator.\n");
     printf("\n");
-    const uint64_t MAX_CMD_SIZE = 1024, MAX_PARAM_SIZE = 512;
+    const uint64_t MAX_CMD_SIZE = 256, MAX_PARAM_SIZE = 128;
+    printf("0x%ullx\n", &MAX_CMD_SIZE);
     while(1) {
         printf("[Ternary_Operator: ~] $>. ");
         char commandline[MAX_CMD_SIZE], params[MAX_CMD_SIZE];
@@ -36,7 +46,13 @@ void kernel_main(unsigned int magic, multiboot_uint8_t *multiboot_header) {
         parse_commandline(commandline, params, MAX_CMD_SIZE);
         char exec[MAX_PARAM_SIZE];
         parse_param(exec, params, 0);
-        if(strcmp(exec, "echo") == 0) {
+        if(strcmp(exec, "poweroff") == 0) {
+            printlogf("The system will poweroff(By user's operation).");
+            poweroff();
+        } else if(strcmp(exec, "reboot") == 0) {
+            printlogf("The system will reboot(By user's operation).");
+            reboot();
+        } else if(strcmp(exec, "echo") == 0) {
             char param1[MAX_PARAM_SIZE];
             parse_param(param1, params, 1);
             printf("%s\n", param1);

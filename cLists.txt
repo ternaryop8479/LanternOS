@@ -11,3 +11,4 @@
 /src/kernel/hal/keyboard.c
 /src/kernel/io/keyboard.c
 /src/kernel/terminal.c
+/src/kernel/hal/acpi.c

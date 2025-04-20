@@ -1,6 +1,6 @@
-# Document of LanternOS_stdlib
+# The document of LanternOS_stdlib
 
-## Introduce
+## Introduction
 LanternOS_stdlib is a library redevelop from stdlib, we organized some API from stdlib and use it to develop the Lantern OS.
 
 ## APIs
