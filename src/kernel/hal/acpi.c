@@ -4,8 +4,8 @@
 
 // 全局变量，存储 FADT 的地址
 static const struct FADT *fadt = NULL;
-static const struct ACPISDTHeader *ssdt = NULL;
-static const struct ACPISDTHeader *dsdt = NULL;
+__attribute ((unused)) static const struct ACPISDTHeader *ssdt = NULL;
+__attribute ((unused)) static const struct ACPISDTHeader *dsdt = NULL;
 
 // 计算校验和的函数
 static bool acpi_checksum_valid(void *table, uint32_t length) {
