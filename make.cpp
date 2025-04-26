@@ -1,19 +1,35 @@
 #include <cstddef>
 #include <cstdio>
+#include <exception>
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
 #include <stdatomic.h>
+#include <filesystem>
 #include <unistd.h>
 #include <string>
 #include <climits>
 #include <libgen.h>
 
-const std::string isoName = "LanternOS_2025.4-1_x86_64.iso";
+const std::string isoName = "LanternOS_2025.4-2_x86_64.img";
 
 int stepNum = 0, stepTotal = 6;
 
 const size_t MAX_FILE_NUM = 1024;
+
+size_t calculate_folder_size_MB(const std::filesystem::path& folder_path) {
+    size_t total_size = 0;
+
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(folder_path)) {
+        if (entry.is_regular_file()) {
+            total_size += entry.file_size();
+        }
+    }
+
+    size_t result = static_cast<uint64_t>(total_size / static_cast<double>(1024 * 1024)) + 1;
+
+    return result;
+}
 
 int main(int argc, char *argv[]) {
     const char *cfullPath; { // 一种优雅不失美观又好用的变量初始化方法
@@ -32,9 +48,9 @@ int main(int argc, char *argv[]) {
     const std::string isoPath = fullPath + "/build/" + isoName; // ISO输出路径
     const std::string srcPath = fullPath + "/src"; // 资源路径
     const std::string includePath = srcPath + "/include"; // include路径
-    const std::string kernelPath = fullPath + "/x86_64/boot/LanternKernel.bin"; // 内核路径
-    const std::string linkerPath = srcPath + "/KernelLinker.lds"; // KernelLinker.lds
     const std::string isoModulePath = fullPath + "/x86_64"; // ISO打包时取的文件夹
+    const std::string kernelPath = isoModulePath + "/EFI/BOOT/BOOTX64.EFI"; // 内核路径
+    const std::string mountPath = fullPath + "/x86_64_mnt"; // 挂载点目录
 
     bool bad_exit = false;
 
@@ -45,41 +61,22 @@ int main(int argc, char *argv[]) {
         printf("[%d/%d] 清理构建文件...\n", stepNum++, stepTotal);
         std::remove(isoPath.c_str());
 
-        printf("[%d/%d] 编译汇编文件...\n", stepNum++, stepTotal);
-        std::ifstream asmLists("asmLists.txt", std::ios::in);
-        if(!asmLists) {
-            std::cerr << "Failed to read asmLists.txt, stop making." << std::endl;
-            bad_exit = true;
-            throw "Error";
-        }
-        std::string asmFiles[MAX_FILE_NUM];
-        size_t asmFiles_size = 0;
-        for(; getline(asmLists, asmFiles[asmFiles_size]); asmFiles[asmFiles_size] = rootPath + asmFiles[asmFiles_size], ++asmFiles_size);
-        asmLists.close();
-        for(int i = 0; i < asmFiles_size; ++i) {
-            Links[Links_size + i] = asmFiles[i];
-            Links[Links_size + i].replace(Links[Links_size + i].find(".S"), 2, ".o");
-            printf("  | 正在编译 %s 到 %s ...\n", asmFiles[i].c_str(), Links[Links_size + i].c_str());
-            system(("gcc -c \'" + asmFiles[i] + "\' -o \'" + Links[Links_size + i] + "\' -ffreestanding -O2 -Wall -fno-stack-protector -Wextra -I\"" + includePath + "\"").c_str());
-        }
-        Links_size += asmFiles_size;
-
-        printf("[%d/%d] 编译C文件...\n", stepNum++, stepTotal);
-        std::ifstream cLists("cLists.txt", std::ios::in);
-        if(!cLists) {
-            std::cerr << "Failed to read cLists.txt, stop making." << std::endl;
+        printf("[%d/%d] 编译makeLists中的文件...\n", stepNum++, stepTotal);
+        std::ifstream makeLists("makeLists.txt", std::ios::in);
+        if(!makeLists) {
+            std::cerr << "Failed to read makeLists.txt, stop making." << std::endl;
             bad_exit = true;
             throw "Error";
         }
         std::string cFiles[MAX_FILE_NUM];
         size_t cFiles_size = 0;
-        for(; getline(cLists, cFiles[cFiles_size]); cFiles[cFiles_size] = rootPath + cFiles[cFiles_size], ++cFiles_size);
-        cLists.close();
+        for(; getline(makeLists, cFiles[cFiles_size]); cFiles[cFiles_size] = rootPath + cFiles[cFiles_size], ++cFiles_size);
+        makeLists.close();
         for(int i = 0; i < cFiles_size; ++i) {
             Links[Links_size + i] = cFiles[i];
-            Links[Links_size + i].replace(Links[Links_size + i].find(".c"), 2, ".o");
+            Links[Links_size + i].replace(Links[Links_size + i].find_last_of("."), Links[Links_size + i].size() - Links[Links_size + i].find_last_of("."), ".o");
             printf("  | 正在编译 %s 到 %s ...\n", cFiles[i].c_str(), Links[Links_size + i].c_str());
-            system(("gcc -c \'" + cFiles[i] + "\' -o \'" + Links[Links_size + i] + "\' -ffreestanding -O2 -Wall -fno-stack-protector -Wextra -I\"" + includePath + "\"").c_str());
+            system(("x86_64-w64-mingw32-gcc -c -I" + includePath + "/ -I/usr/include/efi/ -lefi -lgnuefi -fno-stack-protector -fno-builtin " + cFiles[i] + " -o " + Links[Links_size + i]).c_str());
         }
         Links_size += cFiles_size;
 
@@ -94,9 +91,9 @@ int main(int argc, char *argv[]) {
         }
 
         printf("[%d/%d] 链接内核...\n", stepNum++, stepTotal);
-        std::string linkCommand = "ld -n -T \'" + linkerPath + "\' -o \'" + kernelPath + "\'";
+        std::string linkCommand = "x86_64-w64-mingw32-gcc -L/usr/x86_64-w64-mingw32/lib/ -L/usr/lib/ -L/usr/lib32/ -L/usr/lib64/ -nostdlib -e kernel_main -lgnuefi -lefi -Wl,--no-dynamic-linker,--entry=kernel_main,--subsystem,10 -o " + kernelPath;
         for(int i = 0; i < Links_size; ++i) {
-            linkCommand += " \'" + Links[i] + "\'";
+            linkCommand += " \'" + Links[i] + '\'';
         }
         system(linkCommand.c_str());
         if(access(kernelPath.c_str(), F_OK) != 0) {
@@ -105,16 +102,30 @@ int main(int argc, char *argv[]) {
             throw "Error";
         }
 
-        printf("[%d/%d] 生成ISO镜像...\n", stepNum++, stepTotal);
-        system(("grub-mkrescue \'" + isoModulePath + "\' -o \'" + isoPath + "\' 2> /dev/null").c_str());
+        printf("[%d/%d] 生成IMG镜像...\n", stepNum++, stepTotal);
+        printf("  | 统计文件大小...\n");
+        size_t buildSize = calculate_folder_size_MB(isoModulePath);
+        printf("  |   文件大小: %uMB\n", (unsigned int)buildSize);
+        printf("  | 创建空img文件...\n");
+        system(("dd if=/dev/zero of=" + isoPath + " bs=1M count=" + std::to_string(buildSize) + " status=progress").c_str());
+        printf("  | 构建文件系统...\n");
+        system(("mkfs.vfat " + isoPath).c_str());
+        printf("  | 挂载文件系统...\n");
+        system(("sudo mount " + isoPath + " " + mountPath).c_str());
+        printf("  | 拷贝文件...\n");
+        system(("sudo cp -r " + isoModulePath + "/* " + mountPath + "/").c_str());
+        printf("  | 卸载文件系统...\n");
+        system(("sudo umount " + mountPath).c_str());
         if(access(isoPath.c_str(), F_OK) != 0) {
             std::cerr << "  | ISO镜像未生成。" << std::endl;
             bad_exit = true;
             throw "Error";
         }
+    } catch (const std::exception &e) {
+        std::cerr << "Catched a error while compiling: " << e.what() << std::endl;
     } catch (...) {}
 
-    printf("[%d/%d] 清理编译文件...\n", stepNum++, stepTotal);
+    printf("[%d/%d] 清理编译文件...\n", stepTotal, stepTotal);
     std::remove(kernelPath.c_str());
     for(int i = 0; i < Links_size; ++i) {
         std::remove(Links[i].c_str());
@@ -123,7 +134,6 @@ int main(int argc, char *argv[]) {
         std::cerr << "构建失败。" << std::endl;
         return 1;
     }
-
 
     printf("构建完成: %s\n", isoPath.c_str());
     return 0;

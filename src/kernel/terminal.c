@@ -32,6 +32,8 @@ void getline(char *buffer) {
             vga_putc(' ');
             vga_backspace();
             vga_backspace();
+        } else if(ch == SCAN_LEFT) {
+        } else if(ch == SCAN_RIGHT) {
         } else {
             buffer[offeset++] = ch;
             vga_putc(ch);
@@ -178,3 +180,15 @@ bool parse_param(char *param, const char *params, uint64_t index) {
     escape_to_normal(param, temp, param_size);
     return true;
 }
+
+#pragma GCC diagnostic ignored "-Wreturn-local-addr"
+
+const char *getparam(const char *params_str, uint64_t index, size_t MAX_PARAM_SIZE) {
+    char param[MAX_PARAM_SIZE];
+    if(!parse_param(param, params_str, index)) {
+        return NULL;
+    }
+    return (const char *)param;
+}
+
+#pragma GCC diagnostic warning "-Wreturn-local-addr"

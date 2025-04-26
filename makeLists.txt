@@ -5,10 +5,10 @@
 /src/kernel/time.c
 /src/kernel/stdio.c
 /src/kernel/hal/framebuffer.c
-/src/boot/init.c
 /src/kernel/vga/vga.c
 /src/kernel/string.c
-/src/kernel/hal/keyboard.c
 /src/kernel/io/keyboard.c
 /src/kernel/terminal.c
-/src/kernel/hal/acpi.c
+/src/kernel/disable.S
+/src/kernel/power.c
+/src/kernel/hal/keyboard.c

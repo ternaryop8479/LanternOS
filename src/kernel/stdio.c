@@ -1,5 +1,4 @@
 #include <kernel/stdio.h>
-#include <stdbool.h>
 
 toSize_t printlogf(const char *format, ...) {
     toSize_t result = 0;
