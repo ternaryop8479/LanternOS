@@ -7,7 +7,7 @@ Because our school work, the OS may not often update until June to July this yea
 
 # Functions
 We have completed the following functions so far:
-1. Boot the system by GNU GRUB
+1. Boot the system by our BootLoader-Kernel-Mixed kernel of UEFI(NOT Multiboot2+GRUB2 :P)
 2. VGA I/O and serial I/O
 3. Get RTC time
 4. printf() and memcpy() from stdlib **(but the format of printf() is not as same as printf() from stdio, ask for detail, please look at [LanternOS stdlib](doc/LanternOS_stdlib.md))**
