@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <stdarg.h>
 #include <efi.h>
 #include <efiapi.h>
 #include <efilib.h>

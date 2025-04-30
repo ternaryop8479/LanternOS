@@ -28,6 +28,7 @@ EFI_STATUS EFIAPI kernel_main(EFI_HANDLE imageHandle, EFI_SYSTEM_TABLE *systemTa
     printf("\nWelcome to Lantern OS (%s %s, %s build version)!\n", KERNEL_NAME, KERNEL_VERSION, KERNEL_DATE);
     printf("Copyright(C) Ternary_Operator.\n");
     printf("\n");
+    printlogf("This is a log out(EXCEPTED 0x5201F): %ulx", 0x5201Ful);
     const uint64_t MAX_CMD_SIZE = 256, MAX_PARAM_SIZE = 128;
     while(1) {
         printf("[Ternary_Operator: ~] $>. ");

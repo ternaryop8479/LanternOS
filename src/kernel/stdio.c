@@ -1,30 +1,52 @@
 #include <kernel/stdio.h>
 
 toSize_t printlogf(const char *format, ...) {
-    toSize_t result = 0;
     __builtin_va_list args;
     __builtin_va_start(args, format);
 
-    result += printlogf_nn(format, args);
-    result += printf("\n");
+    toSize_t result = vprintlogf(format, args);
 
     __builtin_va_end(args);
+    return result;
+}
+
+toSize_t neprintlogf(const char *format, ...) {
+    __builtin_va_list args;
+    __builtin_va_start(args, format);
+
+    toSize_t result = vneprintlogf(format, args) + printf("\n");
+
+    __builtin_va_end(args);
+    return result;
+}
+
+toSize_t printf(const char *format, ...) {
+    __builtin_va_list args;
+    __builtin_va_start(args, format);
+
+    toSize_t result = vprintf(format, args);
+
+    __builtin_va_end(args);
+    return result;
+}
+
+toSize_t vprintlogf(const char *format, __builtin_va_list args) {
+    toSize_t result = 0;
+
+    result += vneprintlogf(format, args);
+    result += printf("\n");
 
     return result;
 }
 
-toSize_t printlogf_nn(const char *format, ...) {
+toSize_t vneprintlogf(const char *format, __builtin_va_list args) {
     toSize_t result = 0;
-    __builtin_va_list args;
-    __builtin_va_start(args, format);
-
     struct rtc_time time;
     get_rtc_time(&time);
 
     result += printf("[%d/%d/%d-%d:%d:%d] ", time.year, time.month, time.day, time.hour, time.minute, time.second);
-    result += printf(format, args);
+    result += vprintf(format, args);
 
-    __builtin_va_end(args);
     return result;
 }
 
@@ -48,10 +70,7 @@ toSize_t printlogf_nn(const char *format, ...) {
 //     int:         INT_FLAG | INTEGER_FLAG
 //     long long:   LONGLONG_FLAG | INTEGER_FLAG
 
-toSize_t printf(const char *format, ...) {
-    __builtin_va_list args;
-    __builtin_va_start(args, format);
-
+toSize_t vprintf(const char *format, __builtin_va_list args) {
     char allParam[8192] = {0};
     unsigned alli = 0;
     for(int i = 0; format[i] != '\0'; ++i) {
@@ -936,8 +955,6 @@ toSize_t printf(const char *format, ...) {
             allParam[alli++] = format[i];
         }
     }
-
-    __builtin_va_end(args);
 
     // Put string
     if(is_framebuffer_inited()) {
