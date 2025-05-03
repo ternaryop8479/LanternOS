@@ -12,3 +12,5 @@
 /src/kernel/disable.S
 /src/kernel/power.c
 /src/kernel/hal/keyboard.c
+/src/kernel/memory_manager.c
+/src/kernel/hal/memory_map.c

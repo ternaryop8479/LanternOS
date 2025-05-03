@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
             Links[Links_size + i] = cFiles[i];
             Links[Links_size + i].replace(Links[Links_size + i].find_last_of("."), Links[Links_size + i].size() - Links[Links_size + i].find_last_of("."), ".o");
             printf("  | 正在编译 %s 到 %s ...\n", cFiles[i].c_str(), Links[Links_size + i].c_str());
-            system(("x86_64-w64-mingw32-gcc -c -I" + includePath + "/ -I/usr/include/efi/ -lefi -lgnuefi -fno-stack-protector -fno-builtin " + cFiles[i] + " -o " + Links[Links_size + i]).c_str());
+            system(("x86_64-w64-mingw32-gcc -c -I" + includePath + "/ -I/usr/include/efi/ -lefi -lgnuefi -fno-stack-protector -fno-builtin -O2 " + cFiles[i] + " -o " + Links[Links_size + i]).c_str());
         }
         Links_size += cFiles_size;
 
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
         }
 
         printf("[%d/%d] 链接内核...\n", stepNum++, stepTotal);
-        std::string linkCommand = "x86_64-w64-mingw32-gcc -L/usr/x86_64-w64-mingw32/lib/ -L/usr/lib/ -L/usr/lib32/ -L/usr/lib64/ -nostdlib -e kernel_main -lgnuefi -lefi -Wl,--no-dynamic-linker,--entry=kernel_main,--subsystem,10 -o " + kernelPath;
+        std::string linkCommand = "x86_64-w64-mingw32-gcc -L/usr/x86_64-w64-mingw32/lib/ -L/usr/lib/ -L/usr/lib32/ -L/usr/lib64/ -nostdlib -e kernel_main -lgnuefi -lefi -Wl,--no-dynamic-linker,--entry=kernel_main,--subsystem,10 -O2 -o " + kernelPath;
         for(int i = 0; i < Links_size; ++i) {
             linkCommand += " \'" + Links[i] + '\'';
         }
@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
         printf("  | 创建空img文件...\n");
         system(("dd if=/dev/zero of=" + isoPath + " bs=1M count=" + std::to_string(buildSize) + " status=progress").c_str());
         printf("  | 构建文件系统...\n");
-        system(("mkfs.vfat " + isoPath).c_str());
+        system(("mkfs.vfat -n LanternOS " + isoPath).c_str());
         printf("  | 挂载文件系统...\n");
         system(("sudo mount " + isoPath + " " + mountPath).c_str());
         printf("  | 拷贝文件...\n");

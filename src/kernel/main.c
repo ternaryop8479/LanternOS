@@ -4,6 +4,7 @@
 #include <kernel/terminal.h>
 #include <kernel/time.h>
 #include <kernel/power.h>
+#include <kernel/memory_manager.h>
 
 EFI_STATUS EFIAPI kernel_main(EFI_HANDLE imageHandle, EFI_SYSTEM_TABLE *systemTable) {
     // 初始化任务
@@ -17,6 +18,14 @@ EFI_STATUS EFIAPI kernel_main(EFI_HANDLE imageHandle, EFI_SYSTEM_TABLE *systemTa
     int result = framebuffer_init(systemTable);
     if(result != 0) {
         printlogf("Failed to initialize framebuffer! Code: %d", result);
+        printlogf("Halt.");
+        while(1) HALT();
+    }
+    printlogf("Initializing memory manager...");
+    EFI_STATUS status;
+    status = mmanager_init(imageHandle, systemTable);
+    if(EFI_ERROR(status)) {
+        printlogf("Failed to initialize the memory map.");
         printlogf("Halt.");
         while(1) HALT();
     }

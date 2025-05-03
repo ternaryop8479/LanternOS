@@ -17,4 +17,9 @@
 #define HALT() {asm volatile ("hlt");}
 #define CLINT() {asm volatile ("cli");}
 
+typedef unsigned long long KERNEL_STATUS;
+#define ERROR(a) EFI_ERROR(a)
+#define KERNEL_ERROR_INVALID_MAGIC 0x737886777167
+#define KERNEL_ERROR_INVALID_POINTER 0x737886808482
+
 #endif
