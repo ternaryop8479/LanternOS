@@ -2,3 +2,4 @@ build/*.iso
 backups/
 backup.sh
 make
+build/*.img

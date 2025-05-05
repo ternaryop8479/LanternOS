@@ -7,12 +7,13 @@ Because our school work, the OS may not often update until June to July this yea
 
 # Functions
 We have completed the following functions so far:
-1. Boot the system by our BootLoader-Kernel-Mixed kernel of UEFI(NOT Multiboot2+GRUB2 :P)
+1. Boot the system by UEFI
 2. VGA I/O and serial I/O
-3. Get RTC time
-4. printf() and memcpy() from stdlib **(but the format of printf() is not as same as printf() from stdio, ask for detail, please look at [LanternOS stdlib](doc/LanternOS_stdlib.md))**
+3. Get RTC time and High-precision timer module
+4. Some API from stdlib **(but the format of printf() is not as same as printf() from stdio, ask for detail, please look at [LanternOS stdlib](doc/LanternOS_stdlib.md))**
 5. Keyboard I/O
 6. Basic terminal
+7. Basic memory manager
 
 # Usage
 First of all, clone this responsity:
@@ -26,8 +27,9 @@ and run `./make`
 then, use `./run.sh` to start the LanternOS with your QEMU.
 
 # TODO
-1. Add the memory management.
+1. Make the EDID support.
 2. Make a font for LanternOS Terminal.
 3. Port the stdlib and STL to LanternOS.
 4. Make the disk support.
-5. Compelete the key-maps (key-board mapping).
+5. Make the network support.
+6. Compelete the key-maps (key-board mapping).
