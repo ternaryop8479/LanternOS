@@ -11,7 +11,7 @@ uint32_t *get_framebuffer_ptr() {
 }
 
 // Check if the framebuffer is initialized
-int is_framebuffer_inited() {
+bool is_framebuffer_inited() {
     return FRAMEBUFFER_WIDTH != 0;
 }
 
@@ -28,13 +28,6 @@ static void get_edid_resolution(EFI_SYSTEM_TABLE *systemTable, uint32_t *width, 
     EFI_EDID_DISCOVERED_PROTOCOL *EDP;
     uint32_t EDIDSize;
     uint8_t *EDIDData;
-
-    EFI_EDID_ACTIVE_PROTOCOL *EAP;
-    EFI_GUID EAP_GUID = EFI_EDID_ACTIVE_PROTOCOL_GUID;
-    status = systemTable->BootServices->LocateProtocol(&EAP_GUID, NULL, (void**)&EAP);
-    if(EFI_ERROR(status)) {
-        printlogf("[Error] Failed to process EDID(EFI_EDID_ACTIVE_PROTOCOL).");
-    }
 
     EFI_GUID EDP_GUID = EFI_EDID_DISCOVERED_PROTOCOL_GUID;
     status = systemTable->BootServices->LocateProtocol(&EDP_GUID, NULL, (void **)&EDP);
@@ -62,7 +55,7 @@ static void get_edid_resolution(EFI_SYSTEM_TABLE *systemTable, uint32_t *width, 
 }
 
 // Initialize the framebuffer
-int framebuffer_init(EFI_SYSTEM_TABLE *systemTable) {
+KERNEL_STATUS framebuffer_init(EFI_SYSTEM_TABLE *systemTable) {
     // Get graphics output protocol
     EFI_GRAPHICS_OUTPUT_PROTOCOL *GOP;
     EFI_GUID GOPGUID = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
@@ -73,14 +66,14 @@ int framebuffer_init(EFI_SYSTEM_TABLE *systemTable) {
 
     // Initialize framebuffer base
     framebuffer_base = (uint32_t *)GOP->Mode->FrameBufferBase;
-    uint32_t width, height;
-    get_edid_resolution(systemTable, &width, &height);
 
     // Width & Height
     EFI_GRAPHICS_OUTPUT_MODE_INFORMATION *info = GOP->Mode->Info;
     FRAMEBUFFER_WIDTH = info->HorizontalResolution;
     FRAMEBUFFER_HEIGHT = info->VerticalResolution;
 
+    uint32_t width, height;
+    get_edid_resolution(systemTable, &width, &height);
 
     return 0;
 }

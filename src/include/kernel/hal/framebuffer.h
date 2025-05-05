@@ -7,8 +7,8 @@
 extern uint32_t FRAMEBUFFER_HEIGHT;
 extern uint32_t FRAMEBUFFER_WIDTH;
 
-int is_framebuffer_inited(); // Is framebuffer initialized
-int framebuffer_init(EFI_SYSTEM_TABLE *systemTable); // Initialize framebuffer
+bool is_framebuffer_inited(); // Is framebuffer initialized
+KERNEL_STATUS framebuffer_init(EFI_SYSTEM_TABLE *systemTable); // Initialize framebuffer
 void framebuffer_set_pixel(uint32_t x, uint32_t y, uint32_t color); // Set pixel of the screen
 uint32_t *get_framebuffer_ptr(); // A DANGERUS function to get the base address of framebuffer
 

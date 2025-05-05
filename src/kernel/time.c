@@ -1,4 +1,5 @@
 #include <kernel/time.h>
+#include <kernel/hal/tsc.h>
 
 static uint32_t bcd_to_decimal(uint8_t value) {
     return ((value >> 4) * 10) + (value & 0x0F);
@@ -30,4 +31,17 @@ void get_rtc_time(struct rtc_time *time) {
     }
 
     time->year += 2000;
+}
+
+void sleep_for_ms(uint64_t millisecond) {
+    sleep_for_ns(millisecond * 1000 * 1000);
+}
+void sleep_for_us(uint64_t microsecond) {
+    sleep_for_ns(microsecond * 1000);
+}
+void sleep_for_ns(uint64_t nanosecond) {
+    uint64_t startTSC = read_tsc();
+    while(tsc_to_nanosecond(read_tsc() - startTSC) < nanosecond) {
+        asm volatile ("pause");
+    }
 }

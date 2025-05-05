@@ -20,5 +20,8 @@ struct rtc_time {
 };
 
 void get_rtc_time(struct rtc_time *time);
+void sleep_for_ms(uint64_t millisecond);
+void sleep_for_us(uint64_t microsecond);
+void sleep_for_ns(uint64_t nanosecond);
 
 #endif

@@ -3,10 +3,9 @@
 
 #include <kernel/types.h>
 #include <kernel/hal/ports.h>
-#include <stdint.h>
 
 // Initialize serial port, return 0 means successfully done.
-int serial_init(void);
+KERNEL_STATUS serial_init(void);
 
 // Serial put functions
 void serial_putc(char c); // Put character

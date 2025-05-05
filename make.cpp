@@ -11,7 +11,7 @@
 #include <climits>
 #include <libgen.h>
 
-const std::string isoName = "LanternOS_2025.4-2_x86_64.img";
+const std::string isoName = "LanternOS_2025.5-1_x86_64.img";
 
 int stepNum = 0, stepTotal = 6;
 
